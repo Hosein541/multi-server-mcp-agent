@@ -1,5 +1,8 @@
 import asyncio
 import os
+from utils.cli import *
+from rich.console import Console
+console = Console()
 
 from dotenv import load_dotenv
 
@@ -68,11 +71,12 @@ client = MultiServerMCPClient(
 
 async def main():
 
-    print("Loading MCP tools...")
+    # print("Loading MCP tools...")
+    loading()
 
     tools = await client.get_tools()
-
-    print(f"Loaded {len(tools)} tools")
+    loaded(len(tools))
+    # print(f"Loaded {len(tools)} tools")
 
     llm = ChatGoogleGenerativeAI(
             model="gemini-3.1-flash-lite",
@@ -93,18 +97,22 @@ async def main():
             "thread_id": "demo-session"
         }
     }
-
-    print("\nReady!")
-    print("Type 'exit' to quit.\n")
+    title()
+    ready()
+    # print("\nReady!")
+    # print("Type 'exit' to quit.\n")
 
     while True:
+        user()
 
-        question = input("You: ")
+        question = input()
+        # question = input("You: ")
 
         if question.lower() in {"exit", "quit"}:
             break
 
         print()
+        assistant()
 
         async for event in agent.astream_events(
             {
@@ -129,7 +137,8 @@ async def main():
 
                 tool = event["name"]
 
-                print(f"\n🛠 Calling: {tool}")
+                # print(f"\n🛠 Calling: {tool}")
+                tool_cli(event["name"])
 
             # --------------------
             # Tool End
@@ -137,7 +146,8 @@ async def main():
 
             elif event_type == "on_tool_end":
 
-                print("✓ Tool Finished")
+                # print("✓ Tool Finished")
+                tool_done()
 
             # --------------------
             # Stream Tokens
@@ -151,7 +161,11 @@ async def main():
 
                     # print(chunk.content, end="", flush=True)
                     piece = extract_text(chunk.content)
-                    print(piece, end="", flush=True)
+                    # print(piece, end="", flush=True)
+                    console.out(
+                        piece,
+                        end=""
+                    )
 
         print("\n")
 
