@@ -4,9 +4,8 @@ from utils.cli import *
 from rich.console import Console
 console = Console()
 
-from dotenv import load_dotenv
 
-from langchain_openai import ChatOpenAI
+from dotenv import load_dotenv
 from langchain_mcp_adapters.client import MultiServerMCPClient
 
 from langgraph.prebuilt import create_react_agent
@@ -71,12 +70,11 @@ client = MultiServerMCPClient(
 
 async def main():
 
-    # print("Loading MCP tools...")
     loading()
 
     tools = await client.get_tools()
+
     loaded(len(tools))
-    # print(f"Loaded {len(tools)} tools")
 
     llm = ChatGoogleGenerativeAI(
             model="gemini-3.1-flash-lite",
@@ -99,14 +97,11 @@ async def main():
     }
     title()
     ready()
-    # print("\nReady!")
-    # print("Type 'exit' to quit.\n")
 
     while True:
         user()
 
         question = input()
-        # question = input("You: ")
 
         if question.lower() in {"exit", "quit"}:
             break
@@ -137,7 +132,6 @@ async def main():
 
                 tool = event["name"]
 
-                # print(f"\n🛠 Calling: {tool}")
                 tool_cli(event["name"])
 
             # --------------------
@@ -159,9 +153,7 @@ async def main():
 
                 if hasattr(chunk, "content") and chunk.content:
 
-                    # print(chunk.content, end="", flush=True)
                     piece = extract_text(chunk.content)
-                    # print(piece, end="", flush=True)
                     console.out(
                         piece,
                         end=""
