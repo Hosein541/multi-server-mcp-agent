@@ -140,7 +140,6 @@ async def main():
 
             elif event_type == "on_tool_end":
 
-                # print("✓ Tool Finished")
                 tool_done()
 
             # --------------------
